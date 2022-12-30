@@ -1,33 +1,45 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
 	Box,
 	Button,
 	Container,
 	Grid,
+	IconButton,
+	InputAdornment,
+	OutlinedInput,
 	Paper,
 	TextField,
 	Typography,
 } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { UserContext } from '../../context/user/UserContext'
 
-type LoginType = {
-	username: string
+export type LoginType = {
+	email: string
 	password: string
 }
 export const Login: React.FC = () => {
 	const [loginData, setLoginData] = React.useState<LoginType>({
-		username: '',
+		email: '',
 		password: '',
 	})
+	const { login } = useContext(UserContext)
 	const dataLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setLoginData({
 			...loginData,
 			[e.target.name]: e.target.value,
 		})
 	}
-	const handleSubmit = (e: React.FormEvent<HTMLInputElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLInputElement>) => {
 		e.preventDefault()
 		console.log(loginData)
+		login(loginData)
+		// const res = await api.post('/auth/login', loginData)
+		// console.log(res)
 	}
+	const [showPassword, setShowPassword] = React.useState(false)
+	const handleClickShowPassword = () => setShowPassword((show) => !show)
 	return (
 		<Container maxWidth="sm">
 			<Grid
@@ -44,24 +56,32 @@ export const Login: React.FC = () => {
 						</Typography>
 						<Box component="form" onSubmit={handleSubmit}>
 							<TextField
-								name="username"
+								name="email"
 								type="text"
 								margin="normal"
 								fullWidth
 								label="Email"
 								sx={{ mt: 2, mb: 1.5 }}
-								required
 								onChange={dataLogin}
 							/>
-							<TextField
+							<OutlinedInput
 								name="password"
-								type="password"
-								margin="normal"
 								fullWidth
 								label="Contraseña"
 								sx={{ mt: 1.5, mb: 1.5 }}
-								required
 								onChange={dataLogin}
+								type={showPassword ? 'text' : 'password'}
+								endAdornment={
+									<InputAdornment position="end">
+										<IconButton
+											aria-label="toggle password visibility"
+											onClick={handleClickShowPassword}
+											edge="end"
+										>
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
+									</InputAdornment>
+								}
 							/>
 							<Button
 								type="submit"
@@ -71,6 +91,9 @@ export const Login: React.FC = () => {
 							>
 								INICIAR SESIÓN
 							</Button>
+							<RouterLink to="/register">
+								¿No tenes cuenta? Registrate
+							</RouterLink>
 						</Box>
 					</Paper>
 				</Grid>

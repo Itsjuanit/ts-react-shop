@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import { Box, Button, Container, Typography } from '@mui/material'
 import Grid from '@mui/material/Grid'
 
 export const Error404 = () => {
+	const navigation = useNavigate()
 	const handleClick = () => {
-		console.info(1)
+		navigation('/')
 	}
 	return (
 		<Box
